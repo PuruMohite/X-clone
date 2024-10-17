@@ -9,6 +9,7 @@ import { FaHeart } from "react-icons/fa6";
 
 const NotificationPage = () => {
   const queryClient = useQueryClient();
+  const { data: authUser } = useQuery({ queryKey: ["authUser"] });
   const { data: notifications, isLoading } = useQuery({
     queryKey: ["notifications"],
     queryFn: async () => {
@@ -95,7 +96,9 @@ const NotificationPage = () => {
                 </div>
                 <div className="flex gap-1">
                   <span className="font-bold">
-                    @{notification.from.username}
+                    {notification.from.username === authUser.username
+                      ? `You`
+                      : `@${notification.from.username}`}
                   </span>{" "}
                   {notification.type === "follow"
                     ? "followed you"

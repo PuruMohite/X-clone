@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import useUpdateUserProfile from "../../hooks/useUpdateUserProfile";
+import { useNavigate } from "react-router-dom";
 
 const EditProfileModal = ({ authUser }) => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const EditProfileModal = ({ authUser }) => {
     newPassword: "",
     currentPassword: "",
   });
+  const navigate = useNavigate();
 
   const { updateProfile, isUpdatingProfile } = useUpdateUserProfile();
 
@@ -50,6 +52,7 @@ const EditProfileModal = ({ authUser }) => {
             onSubmit={(e) => {
               e.preventDefault();
               updateProfile(formData);
+              navigate(`/profile/${formData.username}`)
             }}
           >
             <div className="flex flex-wrap gap-2">

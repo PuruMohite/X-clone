@@ -110,9 +110,11 @@ export const updateUser = async (req, res) => {
       (!newPassword && currentPassword) ||
       (!currentPassword && newPassword)
     ) {
+      
       return res.status(400).json({
         error: "Please provide both current password and new password",
       });
+      
     }
 
     if (currentPassword && newPassword) {

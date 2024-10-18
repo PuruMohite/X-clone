@@ -34,13 +34,6 @@ const SignUpPage = () => {
 
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to create account");
-        const loginRes = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
-        });
         // console.log(data);
         return data;
       } catch (error) {
@@ -50,13 +43,41 @@ const SignUpPage = () => {
     },
     onSuccess: () => {
       toast.success("Account created successfully");
-      navigate(`/`);
+    },
+  });
+
+  const {
+    mutate: loginMutation,
+  } = useMutation({
+    mutationFn: async ({ username, password }) => {
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+    onSuccess: () => {
+      //refetch the authUser
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     mutate(formData);
+    loginMutation(formData);
   };
 
   const handleInputChange = (e) => {

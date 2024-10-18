@@ -41,8 +41,10 @@ const SignUpPage = () => {
         throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess:  () => {
       toast.success("Account created successfully");
+      loginMutation({ username: formData.username, password: formData.password });
+      navigate(`/`);
     },
   });
 
@@ -77,7 +79,6 @@ const SignUpPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     mutate(formData);
-    loginMutation(formData);
   };
 
   const handleInputChange = (e) => {

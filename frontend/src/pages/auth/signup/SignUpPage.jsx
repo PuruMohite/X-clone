@@ -9,10 +9,11 @@ import { FaUser } from "react-icons/fa";
 import { MdPassword } from "react-icons/md";
 import { MdDriveFileRenameOutline } from "react-icons/md";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const SignUpPage = () => {
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     email: "",
     username: "",
@@ -41,38 +42,10 @@ const SignUpPage = () => {
         throw error;
       }
     },
-    onSuccess:  () => {
-      toast.success("Account created successfully");
-      loginMutation({ username: formData.username, password: formData.password });
-      navigate(`/`);
-    },
-  });
-
-  const {
-    mutate: loginMutation,
-  } = useMutation({
-    mutationFn: async ({ username, password }) => {
-      try {
-        const res = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || "Something went wrong");
-        }
-      } catch (error) {
-        throw new Error(error);
-      }
-    },
     onSuccess: () => {
-      //refetch the authUser
-      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      queryClient.invalidateQueries("authUser");
+      toast.success("Account created successfully");
+      navigate(`/`);
     },
   });
 

@@ -34,8 +34,14 @@ const SignUpPage = () => {
 
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to create account");
-
-        console.log(data);
+        const loginRes = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        });
+        // console.log(data);
         return data;
       } catch (error) {
         console.error(error);
